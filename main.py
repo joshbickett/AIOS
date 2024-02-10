@@ -1,6 +1,7 @@
 from pynput import keyboard
 import time
 from utils import take_snippet_and_save
+from gui import ask_user_input
 
 
 class DoubleCmdListener:
@@ -22,6 +23,9 @@ class DoubleCmdListener:
             ):
                 print("DOUBLE 'Cmd' pressed!")
                 take_snippet_and_save()
+                # Add the call to the ask_user_input
+                message = ask_user_input()
+                print("User entered:", message)
                 self.cmd_pressed = False  # Reset after detection
             else:
                 self.cmd_pressed = True
