@@ -11,7 +11,14 @@ def ask_user_input():
             ["osascript", "-e", script], text=True, capture_output=True
         )
         if proc.returncode == 0:
-            return proc.stdout.strip()
+            # Parse the output to extract user input
+            output_lines = proc.stdout.strip().split(
+                ":"
+            )  # Split at ":" to separate button and text returned
+            user_input = output_lines[
+                -1
+            ].strip()  # Last part contains the text returned
+            return user_input
         else:
             print("Error: Failed to execute AppleScript.")
             return None
