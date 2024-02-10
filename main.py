@@ -1,5 +1,6 @@
 from pynput import keyboard
 import time
+from utils import take_snippet_and_save
 
 
 class DoubleCmdListener:
@@ -15,6 +16,8 @@ class DoubleCmdListener:
                 and (time.time() - self.last_cmd_time) < self.time_threshold
             ):
                 print("Double 'Cmd' pressed!")
+                take_snippet_and_save()
+
                 self.cmd_pressed = False  # Reset after detection
             else:
                 self.cmd_pressed = True
