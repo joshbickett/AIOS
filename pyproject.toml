@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "aios"
+version = "0.1.0"
+description = ""
+authors = ["Josh Bickett <josh@bickett.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pillow = "^10.2.0"
+pyautogui = "^0.9.54"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
