@@ -2,6 +2,9 @@ import subprocess
 import os
 from datetime import datetime
 import base64
+from config import Config
+
+verbose = Config().verbose
 
 
 def take_snippet_and_save():
@@ -13,7 +16,8 @@ def take_snippet_and_save():
 
     # Convert the image to base64 if it exists
     if os.path.isfile(path):
-        print(f"Snippet saved to {path}")
+        if verbose:
+            print(f"Snippet saved to {path}")
         with open(path, "rb") as image_file:
             encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
         return encoded_string  # Return the base64 string

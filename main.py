@@ -5,11 +5,15 @@ from gui import ask_user_input
 
 from apis import call_openai
 from prompts import get_system_prompt
+from config import Config
+
+verbose = Config().verbose
 
 
 class AIOS:
     def __init__(self, messages):
         self.cmd_pressed = False
+        self.app_active = False
         self.last_cmd_time = 0
         self.time_threshold = 0.2  # Time threshold in seconds for double press
         self.last_key = None
@@ -18,30 +22,35 @@ class AIOS:
     def on_press(self, key):
         current_time = time.time()
         if key == keyboard.Key.cmd:
-
-            print("cmd pressed")
+            if verbose:
+                print("[on_press] cmd pressed")
             if (
                 self.cmd_pressed
                 and current_time - self.last_cmd_time <= self.time_threshold
-                and key
-                == self.last_key  # Check if the last key is the same as the current key
             ):
-                print("DOUBLE 'Cmd' pressed!")
-                img_base64 = take_snippet_and_save()
-                if img_base64:
-                    user_prompt = ask_user_input()
-                    call_openai(
-                        self.messages, user_prompt, img_base64
-                    )  # Pass img_base64 here
+                if not self.app_active:
+                    self.app_active = True
+                    # Code to activate the app
+                    img_base64 = take_snippet_and_save()
+                    if img_base64:
+                        user_message = ask_user_input()
+                        print("[user]", user_message)
+                        call_openai(self.messages, user_message, img_base64)
 
-                self.cmd_pressed = False  # Reset after detection
+                self.cmd_pressed = False
             else:
                 self.cmd_pressed = True
                 self.last_cmd_time = current_time
-                self.last_key = key  # Save the last key pressed
+                self.last_key = key
+        elif self.app_active:
+            # Handle other keys when app is active
+            if verbose:
+                print(f"[on_press] {key}")
+            # Add condition to reset self.app_active if needed
         else:
-            print("reset because key press: ", key)
             self.cmd_pressed = False  # Reset if any other key is pressed
+            if verbose:
+                print(f"[on_press] {key}")
 
     def on_release(self, key):
         pass
