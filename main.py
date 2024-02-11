@@ -3,17 +3,22 @@ import time
 from utils import take_snippet_and_save
 from gui import ask_user_input
 
+from apis import call_openai
+from prompts import get_system_prompt
+
 
 class DoubleCmdListener:
-    def __init__(self):
+    def __init__(self, messages):
         self.cmd_pressed = False
         self.last_cmd_time = 0
         self.time_threshold = 0.2  # Time threshold in seconds for double press
         self.last_key = None
+        self.messages = messages  # Store messages as an instance attribute
 
     def on_press(self, key):
         current_time = time.time()
         if key == keyboard.Key.cmd:
+
             print("cmd pressed")
             if (
                 self.cmd_pressed
@@ -24,8 +29,10 @@ class DoubleCmdListener:
                 print("DOUBLE 'Cmd' pressed!")
                 take_snippet_and_save()
                 # Add the call to the ask_user_input
-                message = ask_user_input()
-                print("User entered:", message)
+                user_prompt = ask_user_input()
+                print("message: ", messages)
+                call_openai(messages, user_prompt)
+
                 self.cmd_pressed = False  # Reset after detection
             else:
                 self.cmd_pressed = True
@@ -40,7 +47,11 @@ class DoubleCmdListener:
 
 
 def main():
-    listener = DoubleCmdListener()
+    system_message = get_system_prompt()
+    messages = [
+        {"role": "system", "content": system_message},
+    ]
+    listener = DoubleCmdListener(messages)  # Pass messages to the listener
     with keyboard.Listener(
         on_press=listener.on_press, on_release=listener.on_release
     ) as l:
