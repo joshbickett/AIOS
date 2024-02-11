@@ -1,23 +1,25 @@
 import subprocess
 import os
 from datetime import datetime
+import base64
 
 
 def take_snippet_and_save():
-    # Ensure the path is absolute
-
     save_path = get_save_path()
-
     path = os.path.abspath(save_path)
 
     # Use macOS's screencapture utility for interactive capture
     subprocess.run(["screencapture", "-i", path])
 
-    # Check if the file was created since screencapture does not capture if the user cancels
+    # Convert the image to base64 if it exists
     if os.path.isfile(path):
         print(f"Snippet saved to {path}")
+        with open(path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+        return encoded_string  # Return the base64 string
     else:
         print("Snippet capture cancelled or failed.")
+        return None
 
 
 def get_save_path():
@@ -44,3 +46,9 @@ def get_save_path():
     save_path = os.path.join(screenshots_directory, filename)
 
     return save_path
+
+
+def convert_image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+    return encoded_string

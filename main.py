@@ -27,11 +27,12 @@ class AIOS:
                 == self.last_key  # Check if the last key is the same as the current key
             ):
                 print("DOUBLE 'Cmd' pressed!")
-                take_snippet_and_save()
-                # Add the call to the ask_user_input
-                user_prompt = ask_user_input()
-                print("message: ", self.messages)  # Access the messages attribute
-                call_openai(self.messages, user_prompt)
+                img_base64 = take_snippet_and_save()
+                if img_base64:
+                    user_prompt = ask_user_input()
+                    call_openai(
+                        self.messages, user_prompt, img_base64
+                    )  # Pass img_base64 here
 
                 self.cmd_pressed = False  # Reset after detection
             else:
