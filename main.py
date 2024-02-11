@@ -7,7 +7,7 @@ from apis import call_openai
 from prompts import get_system_prompt
 
 
-class DoubleCmdListener:
+class AIOS:
     def __init__(self, messages):
         self.cmd_pressed = False
         self.last_cmd_time = 0
@@ -30,8 +30,8 @@ class DoubleCmdListener:
                 take_snippet_and_save()
                 # Add the call to the ask_user_input
                 user_prompt = ask_user_input()
-                print("message: ", messages)
-                call_openai(messages, user_prompt)
+                print("message: ", self.messages)  # Access the messages attribute
+                call_openai(self.messages, user_prompt)
 
                 self.cmd_pressed = False  # Reset after detection
             else:
@@ -51,7 +51,7 @@ def main():
     messages = [
         {"role": "system", "content": system_message},
     ]
-    listener = DoubleCmdListener(messages)  # Pass messages to the listener
+    listener = AIOS(messages)  # Pass messages to the listener
     with keyboard.Listener(
         on_press=listener.on_press, on_release=listener.on_release
     ) as l:
