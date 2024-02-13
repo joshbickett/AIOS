@@ -15,6 +15,9 @@ client = OpenAI(
 
 
 def call_openai(messages, user_prompt, img_base64):
+    if user_prompt is None:
+        return
+
     if verbose:
         print("[call_openai]")
     vision_message = {
@@ -29,19 +32,18 @@ def call_openai(messages, user_prompt, img_base64):
     }
     messages.append(vision_message)
 
-    stream = client.chat.completions.create(
+    response = client.chat.completions.create(
         model="gpt-4-vision-preview",
         messages=messages,
-        stream=True,
+        max_tokens=2000,
     )
 
-    print("[assistant] ", end="")
-    content = ""
+    if verbose:
+        print("[call_openai] response.choices[0]: ", response.choices[0])
 
-    for chunk in stream:
-        if chunk.choices[0].delta.content is not None:
-            print(chunk.choices[0].delta.content, end="")
-            content += chunk.choices[0].delta.content
+    content = response.choices[0].message.content
+
+    print("[assistant] ", content)
 
     # content = clean_json(content)
 

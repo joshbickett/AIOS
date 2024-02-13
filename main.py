@@ -36,7 +36,10 @@ class AIOS:
                         user_message = ask_user_input()
                         print("[user]", user_message)
                         call_openai(self.messages, user_message, img_base64)
-
+                        self.cmd_pressed = False
+                        self.app_active = (
+                            False  # Add this line if you also need to reset app_active
+                        )
                 self.cmd_pressed = False
             else:
                 self.cmd_pressed = True
